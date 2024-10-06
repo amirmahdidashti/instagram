@@ -1,11 +1,15 @@
 @extends('layouts.auth')
 @php
-    $title = 'ورود';
+    $title = 'ثبت نام';
 @endphp
 
 @section('content')
     <form  method="post" class="form" action="">
         @csrf
+        <div class="floating-input ">
+            <input dir="rtl" type="text" name="name" id="name" value="{{ old('name') }}" placeholder=" " >
+            <label for="name" >نام</label>
+        </div>
         <div class="floating-input ">
             <input dir="rtl" type="text" name="email" id="email" value="{{ old('email') }}" placeholder=" " >
             <label for="email" >ایمیل</label>
