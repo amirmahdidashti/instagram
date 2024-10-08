@@ -4,8 +4,60 @@
     font-family: 'Vazirmatn', sans-serif;
 }
 
+.error{
+    color: red;
+    margin-bottom: 5px;
+}
 body {
-    background-color: #f5f5f5;
+    background-color: #f5f5f5 ;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode {
+    background-color: #333 !important;
+    
+}
+
+.dark-mode form {
+    background-color: #444 !important;
+}
+
+
+
+.dark-mode .fa-moon {
+    display: none !important;
+}
+
+.dark-mode-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.dark-mode-button:hover {
+    color: #007bff !important;
+}
+
+.dark-mode .dark-mode-button {
+    color: #fff;
+}
+
+.fa-moon {
+    display: block !important;
+}
+
+.dark-mode .fa-sun {
+    display: block !important;
+}
+
+.fa-sun {
+    display: none !important;
 }
 
 .form {
@@ -54,11 +106,23 @@ body {
     pointer-events: none;
 }
 
+.dark-mode .floating-input label {
+    color: #000;
+}
+
 .floating-input input:focus+label,
 .floating-input input:not(:placeholder-shown)+label {
     top: -10px;
     font-size: 12px;
     color: #333;
+}
+
+.dark-mode .floating-input input:not(:placeholder-shown)+label {
+    color: white !important;
+}
+
+.dark-mode .floating-input input:focus+label {
+    color: white !important;
 }
 
 .submit-button {
@@ -71,6 +135,10 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: #0069d9;
 }
 
 .password-toggle-icon {
@@ -93,6 +161,18 @@ body {
 }
 
 @media (max-width: 500px) {
+    .dark-mode .dark-mode-button:hover {
+        color: #fff !important;
+    }
+    .dark-mode-button:hover {
+        color: #333 !important;
+    }
+
+    .dark-mode-button {
+        top: 10px;
+        right: 10px;
+        text-align: center;
+    }
     .form {
         width: auto;
         height: auto;
