@@ -35,13 +35,18 @@ margin: 10px;
 display: flex;
 flex-direction: row;
 }
-
+.dark-mode .post {
+ color: #FFF;
+}
 .post img {
 width: 75%;
 }
 
 .post-desc {
 margin-right: 10px;
+overflow-warp: break-word;
+world-wrap: break-word;
+word-break: break-word;
 }
 
 @media (max-width: 800px) {

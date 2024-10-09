@@ -24,4 +24,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/', [SiteController::class, 'index']);
+    Route::get('/newpost', [SiteController::class, 'newpost']);
+    Route::post('/newpost', [SiteController::class, 'newpostPost']);
 });

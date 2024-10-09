@@ -33,7 +33,7 @@
         <p class="error">{{ $message }} <i class="fas fa-exclamation-triangle"></i></p>
     @enderror
     <div class="floating-input ">
-        <input style="background-color: white !important;" dir="rtl" type="file" name="avatar" id="avatar" value="{{ old('avatar') }}">
+        <input style="background-color: white !important;" dir="rtl" type="file" name="avatar" id="avatar" >
         <label for="avatar">عکس پروفایل</label>
     </div>
     <button type="submit" class="submit-button">ثبت نام</button>
