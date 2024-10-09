@@ -11,7 +11,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>{{ $title ?? 'Page Title' }}</title>
     <style>
-        .profile{
+        .profile {
             position: absolute;
             top: 20px;
             right: 70px;
@@ -22,13 +22,29 @@
             font-size: 24px;
             cursor: pointer;
         }
+
+        .add {
+            position: absolute;
+            top: 20px;
+            right: 120px;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            line-height: 40px;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
         .dark-mode-button {
             position: absolute;
         }
-        .profile img{
+
+        .profile img {
             border-radius: 20px;
             width: 40px;
+            height: 40px;
         }
+
         @yield('style')
     </style>
 </head>
@@ -39,8 +55,11 @@
             <i class="fas fa-moon"></i>
             <i class="fas fa-sun "></i>
         </button>
-        <a href="#" class="profile">
-            <img src="https://gravatar.com/avatar/0?d=mp&s=40px" >
+        <a href="/logout" class="profile">
+            <img src="{{asset(auth()->user()->avatar)}}">
+        </a>
+        <a href="/newpost" class="add">
+            <i class="fas fa-plus"></i>
         </a>
     </div>
     @yield('content')

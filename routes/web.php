@@ -19,6 +19,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'loginPost']);
     Route::get('/register', [AuthController::class, 'register']);
     Route::post('/register', [AuthController::class, 'registerPost']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);

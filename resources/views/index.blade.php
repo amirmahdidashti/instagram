@@ -11,7 +11,21 @@ flex-direction: column;
 padding: 20px;
 flex-wrap: wrap;
 }
-
+.post-profile{
+margin-right: 10px;
+margin-top: 10px;
+position: absolute;
+z-index: 999;
+background-color: transparent;
+border: none;
+color: #333;
+cursor: pointer;
+}
+.post-profile img{
+border-radius: 20px ;
+width: 40px !important;
+height: 40px !important;
+}
 .post {
 flex-grow: 1;
 width: 100%;
@@ -45,12 +59,17 @@ width: 100%;
 @endsection
 @section('content')
 <div class="posts">
-    <div class="post">
-        <img src="https://flowbite.com/docs/images/examples/image-1@2x.jpg" alt="">
-        <div class="post-desc">
-            <p style="font-weight: bold;">پست جدید</p>
-            <p>سلام لورم اسپیون لورم اسپیون لورم اسپیون لورم اسپیون لورم اسپیون</p>
+    @foreach ($posts as $post)
+        <div class="post">
+            <a href="/profile/{{$post->user_id}}" class="post-profile">
+                <img src="{{asset($post->user_avatar)}}">
+            </a>
+            <img src="{{asset($post->image)}}" alt="{{$post->title}}">
+            <div class="post-desc">
+                <p style="font-weight: bold;">{{$post->title}}</p>
+                <p>{{$post->body}}</p>
+            </div>
         </div>
-    </div>
+    @endforeach
 </div>
 @endsection
