@@ -1,4 +1,6 @@
 @extends('layouts.master')
+@php $title = 'خانه';
+@endphp
 @section('style')
 .posts {
 margin-top: 50px;
