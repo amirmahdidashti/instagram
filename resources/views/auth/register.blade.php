@@ -4,7 +4,7 @@
 @endphp
 
 @section('content')
-<form method="post" class="form" action="">
+<form method="post" class="form" action="" enctype="multipart/form-data">
     @csrf
     @error('name')
         <p class="error">{{ $message }} <i class="fas fa-exclamation-triangle"></i></p>
@@ -28,6 +28,13 @@
             placeholder=" ">
         <label for="password">رمز عبور</label>
         <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+    </div>
+    @error('avatar')
+        <p class="error">{{ $message }} <i class="fas fa-exclamation-triangle"></i></p>
+    @enderror
+    <div class="floating-input ">
+        <input style="background-color: white !important;" dir="rtl" type="file" name="avatar" id="avatar" value="{{ old('avatar') }}">
+        <label for="avatar">عکس پروفایل</label>
     </div>
     <button type="submit" class="submit-button">ثبت نام</button>
 </form>

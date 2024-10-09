@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="rtl" lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -11,18 +11,39 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>{{ $title ?? 'Page Title' }}</title>
     <style>
-        body {
-            background-color: #f5f5f5;
+        .profile{
+            position: absolute;
+            top: 20px;
+            right: 70px;
+            z-index: 999;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            font-size: 24px;
+            cursor: pointer;
         }
+        .dark-mode-button {
+            position: absolute;
+        }
+        .profile img{
+            border-radius: 20px;
+            width: 40px;
+        }
+        @yield('style')
     </style>
 </head>
 
-<body class="theme">
-    <button class="dark-mode-button" onclick="toggleDarkMode(); setTheme(document.body.className);">
-        <i class="fas fa-moon"></i>
-        <i class="fas fa-sun "></i>
-    </button>
-
+<body class="">
+    <div>
+        <button class="dark-mode-button" onclick="toggleDarkMode(); setTheme(document.body.className);">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun "></i>
+        </button>
+        <a href="#" class="profile">
+            <img src="https://gravatar.com/avatar/0?d=mp&s=40px" >
+        </a>
+    </div>
+    @yield('content')
     <script>
         const darkModeButton = document.querySelector('.dark-mode-button');
 
@@ -31,7 +52,6 @@
             darkModeButton.classList.toggle('dark-mode');
         }
     </script>
-    @yield('content')
     <script src="{{ asset('js/passwordhide.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

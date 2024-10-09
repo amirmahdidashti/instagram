@@ -52,11 +52,14 @@ class AuthController extends Controller
             'email.unique' => 'ایمیل تکراری است',
             'password.min' => 'رمز عبور باید حداقل 8 کاراکتر باشد',
             'password.required' => 'رمز عبور نباید خالی باشد',
+            'avatar.mimes' => 'فرمت عکس باید jpeg, jpg, png, gif باشد',
+            'avatar.max' => 'حجم عکس باید حداکثر 2 مگابایت باشد',
         ];
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
+            'avatar' => 'mimes:jpeg,jpg,png,gif|max:2048',
         ];
         $validator = Validator::make($req->all(), $rules, $mesages);
         if ($validator->fails()) {
@@ -64,8 +67,17 @@ class AuthController extends Controller
         }
         $user = new User();
         $user->name = $req->name;
-        $user->email = $req->email;
-        $user->password = bcrypt($req->password);
+        $user->email = strtolower( trim( $req->email ));
+        $user->password = bcrypt(trim($req->password ));
+        if($req->hasFile('avatar')) {
+            $img = $req->file('avatar');
+            $imgName = time().".".$img->getClientOriginalExtension();
+            $img->move('files/users/',$imgName);
+            $user->avatar = 'files/users/'.$imgName;
+        }
+        else {
+            $user->avatar = 'https://www.gravatar.com/avatar/'.hash( 'sha256', strtolower( trim( $user->email ) )).'?d=mp';
+        }
         $user->save();
         Auth::login($user);
         return redirect('/');

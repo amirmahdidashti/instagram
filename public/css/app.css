@@ -7,9 +7,10 @@
 .error{
     color: red;
     margin-bottom: 5px;
+    
 }
 body {
-    background-color: #f5f5f5 ;
+    background-color: white ;
     transition: background-color 0.3s ease;
 }
 
@@ -36,9 +37,10 @@ body {
     background-color: transparent;
     border: none;
     color: #333;
-    font-size: 24px;
+    font-size: 40px;
     cursor: pointer;
 }
+
 
 .dark-mode-button:hover {
     color: #007bff !important;
@@ -62,7 +64,7 @@ body {
 
 .form {
     width: 500px;
-    height: 300px;
+    height: 330px;
     margin: auto;
     position: absolute;
     align-items: center;
@@ -166,12 +168,6 @@ body {
     }
     .dark-mode-button:hover {
         color: #333 !important;
-    }
-
-    .dark-mode-button {
-        top: 10px;
-        right: 10px;
-        text-align: center;
     }
     .form {
         width: auto;
