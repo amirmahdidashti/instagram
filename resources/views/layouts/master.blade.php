@@ -34,7 +34,9 @@
             font-size: 40px;
             cursor: pointer;
         }
-
+        .dark-mode .add{
+            color: #fff;
+        }
         .dark-mode-button {
             position: absolute;
         }
