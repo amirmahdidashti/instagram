@@ -14,7 +14,7 @@
         .profile {
             position: absolute;
             top: 20px;
-            right: 70px;
+            right: 120px;
             z-index: 999;
             background-color: transparent;
             border: none;
@@ -26,7 +26,46 @@
         .add {
             position: absolute;
             top: 20px;
-            right: 120px;
+            right: 170px;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            z-index: 999;
+            line-height: 40px;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        .add:hover{
+            color: #007bff !important;
+        }
+        .dark-mode .add{
+            color: #fff;
+        }
+        .home {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            line-height: 40px;
+            z-index: 999;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        .home:hover{
+            color: #007bff !important;
+        }
+        .dark-mode .home{
+            color: #fff;
+        }
+        .chat {
+            position: absolute;
+            top: 20px;
+            z-index: 999;
+            right: 220px;
             background-color: transparent;
             border: none;
             color: #333;
@@ -34,7 +73,11 @@
             font-size: 40px;
             cursor: pointer;
         }
-        .dark-mode .add{
+
+        .chat:hover{
+            color: #007bff !important;
+        }
+        .dark-mode .chat{
             color: #fff;
         }
         .dark-mode-button {
@@ -46,7 +89,17 @@
             width: 40px;
             height: 40px;
         }
-
+        .chat .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            padding: 5px 10px;
+            line-height: 1;
+            border-radius: 50%;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+        }
         @yield('style')
     </style>
 </head>
@@ -57,11 +110,18 @@
             <i class="fas fa-moon"></i>
             <i class="fas fa-sun "></i>
         </button>
-        <a href="/logout" class="profile">
+        <a href="/profile" class="profile">
             <img src="{{asset(auth()->user()->avatar)}}">
         </a>
         <a href="/newpost" class="add">
             <i class="fas fa-plus"></i>
+        </a>
+        <a href="/" class="home">
+            <i class="fas fa-home"></i>
+        </a>
+        <a href="/chat" class="chat">
+            <i class="fas fa-envelope"></i>
+            <span class="badge">3</span>
         </a>
     </div>
     @yield('content')

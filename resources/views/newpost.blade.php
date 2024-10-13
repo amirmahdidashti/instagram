@@ -3,7 +3,7 @@
 @endphp
 @section('style')
 .add{
-display: none;
+    color: #007bff !important;
 }
 .form{
     height: fit-content;
@@ -41,6 +41,11 @@ pointer-events: none;
 background-color: #444;
 color: #fff;
 }
+@media (max-height: 600px) {
+.form{
+    margin-top : 70px;
+}
+}
 @endsection
 @section('content')
 <form method="post" class="form" action="" enctype="multipart/form-data">
@@ -56,7 +61,7 @@ color: #fff;
         <p class="error">{{ $message }} <i class="fas fa-exclamation-triangle"></i></p>
     @enderror
     <div class="floating-textarea">
-        <textarea id="body" rows="6" name="body">{{ old('title') }}</textarea>
+        <textarea id="body" rows="6" name="body">{{ old('body') }}</textarea>
         <label for="body">متن:</label>
     </div>
     @error('image')

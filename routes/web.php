@@ -26,4 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [SiteController::class, 'index']);
     Route::get('/newpost', [SiteController::class, 'newpost']);
     Route::post('/newpost', [SiteController::class, 'newpostPost']);
+    Route::get('/delete/{id}', [SiteController::class, 'delete']);
+    Route::get('/profile/{id}', [SiteController::class, 'profile']);
+    Route::get('/profile', [SiteController::class, 'profile']);
+    Route::post('/profile', [SiteController::class, 'profilePost']);
 });
+Route::get('/{id}', [SiteController::class, 'show']);

@@ -1,4 +1,19 @@
 
+function openpopup(id) {
+    document.getElementById(id).style.display = 'flex';
+}
+
+function closepopup(id) {
+    document.getElementById(id).style.display = 'none';
+}
+function toggleDisplay(id) {
+    const element = document.getElementById(id);
+    if (element.style.display == 'none') {
+        element.style.display = 'block';
+    } else {
+        element.style.display = 'none';
+    }
+}
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
 }
@@ -15,6 +30,6 @@ function loadTheme() {
     }
 }
 
-window.onload = function() {
+window.onload = function () {
     loadTheme();
 }
