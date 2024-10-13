@@ -35,7 +35,7 @@ class SiteController extends Controller
         if ($req->page == null) {
             $posts->nextpage = 2;
         }
-        if(!isset($posts[0])) {
+        if(!isset($posts[0]) && $req->page != null) {
             abort(404);
         }
         return view('index', compact('posts'));
