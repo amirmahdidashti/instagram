@@ -36,6 +36,7 @@ align-items: center;
 }
 .dark-mode .popup-content{
 background-color: #333 !important;
+color: #fff;
 }
 .popup-content {
 background-color: white;
@@ -44,7 +45,6 @@ border-radius: 10px;
 width: 300px;
 text-align: center;
 }
-
 .close {
 float: right;
 font-size: 24px;
@@ -100,7 +100,9 @@ border-radius: 0px !important;
     <img src="{{asset($user->avatar)}}">
     <div><button onclick="openpopup('followers-popup')" class="btn popup-btn" id="followers">دنبال
             کنندگان</button><button onclick="openpopup('following-popup')" class="btn popup-btn" id="following">دنبال
-            شوندگان</button></div>
+            شوندگان</button>
+    </div>
+    <a href="/profile/{{$user->id}}/posts" class="btn">پست ها</a>
     @if (Auth::user()->id == $user->id)
         <a href="/logout" style="background-color: red !important;" class="btn">خروج</a></a>
         <button onclick="toggleDisplay('edit-form')" class="btn popup-btn" id="edit">ویرایش</button>
@@ -148,19 +150,27 @@ border-radius: 0px !important;
             <button type="submit" class="submit-button">ویرایش</button>
         </form>
     @else
+        @if ($user->followers->contains(Auth::user()))
+            <a href="/profile/{{$user->id}}/follow" class="btn">لغو دنبال کردن</a>
+        @else
+            <a href="/profile/{{$user->id}}/follow" class="btn">دنبال کردن</a>
+        @endif
         <p>{{$user->name}}</p>
         <p>{{$user->email}}</p>
         <a href="/chat/{{$user->id}}">پیام به {{$user->name}}</a>
     @endif
+
 </div>
 <div id="following-popup" class="popup">
     <div class="popup-content">
         <span class="close" onclick="closepopup('following-popup')">&times;</span>
         <h2>دنبال شوندگان</h2>
         <ul class="list">
-            <li>
-                <a href="/profile/5">علی</a>
-            </li>
+            @foreach ($user->following as $following)
+                <li>
+                    <a href="/profile/{{$following->id}}">{{$following->name}} </a>
+                </li>
+            @endforeach
         </ul>
     </div>
 </div>
@@ -169,9 +179,11 @@ border-radius: 0px !important;
         <span class="close" onclick="closepopup('followers-popup')">&times;</span>
         <h2>دنبال کنندگان</h2>
         <ul class="list">
-            <li>
-                <a href="/profile/5">علی</a>
-            </li>
+            @foreach ($user->followers as $follower)
+                <li>
+                    <a href="/profile/{{$follower->id}}">{{$follower->name}} </a>
+                </li>
+            @endforeach
         </ul>
     </div>
 </div>

@@ -106,7 +106,6 @@ width: 100%;
             </div>
         </div>
     @endforeach
-    <a href="/?page={{$posts->nextpage}}" style="text-align: center;font-size: 18px;">بعدی</a>
 </div>
 
 @endsection

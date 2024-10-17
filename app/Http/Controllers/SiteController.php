@@ -5,38 +5,41 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Follower;
 use Auth;
 use Validator;
 use Hash;
 class SiteController extends Controller
 {
-    public function index(request $req)
+    public function index()
     {
-        
-        if ($req->user != null) {
-            $posts = Post::where('user_id', $req->user)->get();
-        }
-        elseif($req->mf== 1) {
-            $posts = Post::where('user_id', 2)->get();
-        }
-        elseif($req->page != null) {
-            $posts = Post::all()->skip(($req->page -1)* 10)->take(10);
-        }
-        else {
-            $posts = Post::all()->take(10);
-            
-        }
+        $myFollowing = Follower::where('follower_id', Auth::user()->id)->pluck('following_id');
+        $posts = Post::whereIn('user_id', $myFollowing)->get()->reverse();
         foreach ($posts as $post) {
             $user = User::find($post->user_id);
             $post->user_avatar = $user->avatar;
             $post->user_id = $user->id;
         }
-        $posts->nextpage = $req->page + 1;
-        if ($req->page == null) {
-            $posts->nextpage = 2;
+        
+        return view('index', compact('posts'));
+    }
+    public function all()
+    {
+        $posts = Post::all()->reverse();
+        foreach ($posts as $post) {
+            $user = User::find($post->user_id);
+            $post->user_avatar = $user->avatar;
+            $post->user_id = $user->id;
         }
-        if(!isset($posts[0]) && $req->page != null) {
-            abort(404);
+        return view('index', compact('posts'));   
+    }
+    public function userPosts($id)
+    {
+        $posts = Post::where('user_id', $id)->get()->reverse();
+        foreach ($posts as $post) {
+            $user = User::find($post->user_id);
+            $post->user_avatar = $user->avatar;
+            $post->user_id = $user->id;
         }
         return view('index', compact('posts'));
     }
@@ -70,9 +73,9 @@ class SiteController extends Controller
         $post->title = $req->title;
         $post->body = $req->body;
         $img = $req->file('image');
-        $imgName = time().".".$img->getClientOriginalExtension();
-        $img->move('files/posts/',$imgName);
-        $post->image = 'files/posts/'.$imgName;
+        $imgName = time() . "." . $img->getClientOriginalExtension();
+        $img->move('files/posts/', $imgName);
+        $post->image = 'files/posts/' . $imgName;
         $post->save();
         return redirect('/');
     }
@@ -90,18 +93,24 @@ class SiteController extends Controller
     }
     public function profile($id = null)
     {
-        if ($id){
+        if ($id) {
             $user = User::find($id);
-        }
-        else{
+        } else {
             $user = Auth::user();
         }
         if (!$user) {
             return abort(404);
         }
+        $followers_id = Follower::where('following_id', $user->id)->pluck('follower_id');
+        $followers = User::whereIn('id', $followers_id)->get();
+        $following_id = Follower::where('follower_id', $user->id)->pluck('following_id');
+        $following = User::whereIn('id', $following_id)->get();
+        $user->followers = $followers;
+        $user->following = $following;
         return view('profile', compact('user'));
     }
-    public function profilePost(Request $req){
+    public function profilePost(Request $req)
+    {
         $message = [
             'name.required' => 'نام نباید خالی باشد',
             'email.required' => 'ایمیل نباید خالی باشد',
@@ -113,7 +122,7 @@ class SiteController extends Controller
         ];
         $roles = [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
+            'email' => 'required|email|unique:users,email,' . Auth::user()->id,
             'password' => 'nullable',
             'new_password' => 'nullable|min:8',
             'avatar' => 'nullable|mimes:jpeg,jpg,png,gif|max:2048',
@@ -124,26 +133,24 @@ class SiteController extends Controller
         }
         $user = Auth::user();
         $user->name = $req->name;
-        if (strtolower( trim( $req->email )) != $user->email) {
-            $user->avatar = 'https://www.gravatar.com/avatar/'.hash( 'sha256', strtolower( trim( $req->email ) )).'?d=mp';
+        if (strtolower(trim($req->email)) != $user->email) {
+            $user->avatar = 'https://www.gravatar.com/avatar/' . hash('sha256', strtolower(trim($req->email))) . '?d=mp';
         }
-        $user->email = strtolower( trim( $req->email ));
+        $user->email = strtolower(trim($req->email));
         if ($req->password && $req->new_password) {
             if (Hash::check($req->password, $user->password)) {
-                $user->password = bcrypt($req->new_password);   
-            }
-            else{
+                $user->password = bcrypt($req->new_password);
+            } else {
                 return redirect()->back()->withInput($req->all())->withErrors(['password' => 'رمز عبور اشتباه است']);
             }
         }
-        if($req->hasFile('avatar')) {
+        if ($req->hasFile('avatar')) {
             $img = $req->file('avatar');
-            $imgName = time().".".$img->getClientOriginalExtension();
-            $img->move('files/users/',$imgName);
-            $user->avatar = 'files/users/'.$imgName;
-        }
-        else {
-            $user->avatar = 'https://www.gravatar.com/avatar/'.hash( 'sha256', strtolower( trim( $user->email ) )).'?d=mp';
+            $imgName = time() . "." . $img->getClientOriginalExtension();
+            $img->move('files/users/', $imgName);
+            $user->avatar = 'files/users/' . $imgName;
+        } else {
+            $user->avatar = 'https://www.gravatar.com/avatar/' . hash('sha256', strtolower(trim($user->email))) . '?d=mp';
         }
         $user->save();
         return redirect('/profile');
@@ -158,5 +165,21 @@ class SiteController extends Controller
         $post->user_avatar = $user->avatar;
         $post->user_id = $user->id;
         return view('post', compact('post'));
+    }
+    public function follow($id)
+    {
+        if (Auth::user()->id == $id) {
+            return redirect('/profile/' . $id);
+        }
+        elseif (Follower::where('follower_id', Auth::user()->id)->where('following_id', $id)->first()!=null) {
+            Follower::where('follower_id', Auth::user()->id)->where('following_id', $id)->delete();
+        }
+        else{
+            $follower = new Follower();
+            $follower->follower_id = Auth::user()->id;
+            $follower->following_id = $id;
+            $follower->save();
+        }
+        return redirect('/profile/' . $id);
     }
 }

@@ -24,11 +24,14 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/', [SiteController::class, 'index']);
+    Route::get('/all', [SiteController::class, 'all']);
     Route::get('/newpost', [SiteController::class, 'newpost']);
     Route::post('/newpost', [SiteController::class, 'newpostPost']);
     Route::get('/delete/{id}', [SiteController::class, 'delete']);
     Route::get('/profile/{id}', [SiteController::class, 'profile']);
     Route::get('/profile', [SiteController::class, 'profile']);
     Route::post('/profile', [SiteController::class, 'profilePost']);
+    Route::get('/profile/{id}/follow', [SiteController::class, 'follow']);
+    Route::get('/profile/{id}/posts', [SiteController::class, 'userPosts']);
 });
 Route::get('/{id}', [SiteController::class, 'show']);

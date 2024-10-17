@@ -46,7 +46,7 @@
         .dark-mode-button {
             position: fixed;
             top: 20px;
-            right: 20px;
+            right: 70px;
             z-index: 999;
             background-color: transparent;
             border: none;
@@ -92,6 +92,7 @@
 
         .dark-mode .container {
             background-color: #444;
+            color: #fff;
         }
 
         .post-profile {
@@ -126,7 +127,25 @@
         .post-delete:hover {
             color: #007bff !important;
         }
+        .home {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            line-height: 40px;
+            z-index: 999;
+            font-size: 40px;
+            cursor: pointer;
+        }
 
+        .home:hover{
+            color: #007bff !important;
+        }
+        .dark-mode .home{
+            color: #fff;
+        }
         .dark-mode .post-delete {
             color: #fff;
         }
@@ -142,13 +161,15 @@
                 height: auto;
                 max-height: 100vh;
             }
+
             .post-delete {
                 top: 20px;
                 right: 120px;
             }
-            .post-profile{
+
+            .post-profile {
                 top: 20px;
-                right: 70px;
+                right: 120px;
             }
 
             .dark-mode-button:hover {
@@ -163,12 +184,14 @@
         <i class="fas fa-moon"></i>
         <i class="fas fa-sun "></i>
     </button>
-
+    <a href="/" class="home">
+            <i class="fas fa-home"></i>
+        </a>
     <div class="container">
+        <a href="/profile/{{$post->user_id}}" class="post-profile">
+            <img src="{{asset($post->user_avatar)}}">
+        </a>
         @auth
-            <a href="/profile/{{$post->user_id}}" class="post-profile">
-                <img src="{{asset($post->user_avatar)}}">
-            </a>
             @if (Auth::user()->id == $post->user_id || Auth::user()->email == 'amirdashti264@gmail.com')
                 <a href="/delete/{{$post->id}}" class="post-delete">
                     <i class="fas fa-trash"></i>
@@ -176,7 +199,8 @@
             @endif
         @endauth
         <img src="{{$post->image}}" alt="{{$post->title}}">
-        <div dir="rtl" style="overflow-x: auto;overflow-wrap: break-word; word-break: break-word;text-align: justify;margin-top: 10px;">
+        <div dir="rtl"
+            style="overflow-x: auto;overflow-wrap: break-word; word-break: break-word;text-align: justify;margin-top: 10px;">
             <h1>{{$post->title}}</h1>
             <p>{{$post->body}}</p>
         </div>
