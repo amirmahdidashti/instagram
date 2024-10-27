@@ -100,6 +100,24 @@
             color: white;
             font-size: 12px;
         }
+        .search{
+            position: absolute;
+            top: 20px;
+            z-index: 999;
+            right: 270px;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            line-height: 40px;
+            font-size: 40px;
+            cursor: pointer;
+        }
+        .search:hover{
+            color: #007bff !important;
+        }
+        .dark-mode .search{
+            color: #fff;
+        }
         @yield('style')
     </style>
 </head>
@@ -122,6 +140,9 @@
         <a href="/chat" class="chat">
             <i class="fas fa-envelope"></i>
             <span class="badge">3</span>
+        </a>
+        <a href="/search" class="search">
+            <i class="fas fa-search"></i>
         </a>
     </div>
     @yield('content')
