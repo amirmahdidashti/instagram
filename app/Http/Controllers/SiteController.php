@@ -23,6 +23,17 @@ class SiteController extends Controller
         
         return view('index', compact('posts'));
     }
+	public function search(Request $req)
+    {
+        if (isset($req->s)) {
+            $s = $req->s;
+        }
+        else{
+            $s = "";
+        }
+        $users = User::where('name','like','%'.$req->s.'%')->get();
+        return view('search', compact('users','s'));
+    }
     public function all()
     {
         $posts = Post::all()->reverse();

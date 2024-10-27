@@ -106,6 +106,9 @@ width: 100%;
             </div>
         </div>
     @endforeach
+    @if (request()->path() == '/')
+        <a style="text-align: center;" href="/all">همه پست ها</a>
+    @endif
 </div>
 
 @endsection

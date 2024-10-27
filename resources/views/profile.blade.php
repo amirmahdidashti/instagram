@@ -81,7 +81,6 @@ border-radius: 50%;
 margin: 5px 0;
 }
 .edit-form{
-display: none;
 width : 100%;
 padding-top : 20px;
 
@@ -106,7 +105,7 @@ border-radius: 0px !important;
     @if (Auth::user()->id == $user->id)
         <a href="/logout" style="background-color: red !important;" class="btn">خروج</a></a>
         <button onclick="toggleDisplay('edit-form')" class="btn popup-btn" id="edit">ویرایش</button>
-        <form id="edit-form" class="edit-form" action="/profile" method="post" enctype="multipart/form-data">
+        <form id="edit-form" style="display: none;" class="edit-form" action="/profile" method="post" enctype="multipart/form-data">
             <br>
             @csrf
             @error('name')
