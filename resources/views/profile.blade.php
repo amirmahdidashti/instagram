@@ -156,7 +156,7 @@ border-radius: 0px !important;
         @endif
         <p>{{$user->name}}</p>
         <p>{{$user->email}}</p>
-        <a href="/chat/{{$user->id}}">پیام به {{$user->name}}</a>
+        <a href="/profile/{{$user->id}}/chat">پیام به {{$user->name}}</a>
     @endif
 
 </div>

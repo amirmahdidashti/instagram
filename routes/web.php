@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ChatController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +25,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/', [SiteController::class, 'index']);
+    Route::get('/chat/{id}', [ChatController::class, 'chat']);
+    Route::post('/chat/{id}', [ChatController::class, 'newMessage']);
     Route::get('/search', [SiteController::class, 'search']);
     Route::get('/all', [SiteController::class, 'all']);
     Route::get('/newpost', [SiteController::class, 'newpost']);
@@ -32,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{id}', [SiteController::class, 'profile']);
     Route::get('/profile', [SiteController::class, 'profile']);
     Route::post('/profile', [SiteController::class, 'profilePost']);
+    Route::get('/profile/{id}/chat', [ChatController::class, 'newChat']);
     Route::get('/profile/{id}/follow', [SiteController::class, 'follow']);
     Route::get('/profile/{id}/posts', [SiteController::class, 'userPosts']);
 });

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@php $title = 'خانه';
+@php $title = 'جستجو';
 @endphp
 @section('style')
 #search-wrapper{
