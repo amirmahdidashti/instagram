@@ -36,6 +36,9 @@ class ChatController extends Controller
         if (!$chat) {
             return redirect('/');
         }
+        if ($chat->user_1 != Auth::user()->id && $chat->user_2 != Auth::user()->id) {
+            return abort(403);
+        }
         $messages = message::where('chat_id', $id)->get();
         $user = User::find($chat->user_2);
         if ($user == Auth::user()) {

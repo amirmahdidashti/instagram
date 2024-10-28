@@ -139,7 +139,6 @@
         </a>
         <a href="/chat" class="chat">
             <i class="fas fa-envelope"></i>
-            <span class="badge">3</span>
         </a>
         <a href="/search" class="search">
             <i class="fas fa-search"></i>
