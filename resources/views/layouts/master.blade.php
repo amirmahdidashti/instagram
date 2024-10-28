@@ -10,6 +10,7 @@
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>{{ $title ?? 'Page Title' }}</title>
+
     <style>
         .profile {
             position: absolute;
@@ -36,12 +37,14 @@
             cursor: pointer;
         }
 
-        .add:hover{
+        .add:hover {
             color: #007bff !important;
         }
-        .dark-mode .add{
+
+        .dark-mode .add {
             color: #fff;
         }
+
         .home {
             position: absolute;
             top: 20px;
@@ -55,12 +58,14 @@
             cursor: pointer;
         }
 
-        .home:hover{
+        .home:hover {
             color: #007bff !important;
         }
-        .dark-mode .home{
+
+        .dark-mode .home {
             color: #fff;
         }
+
         .chat {
             position: absolute;
             top: 20px;
@@ -74,12 +79,14 @@
             cursor: pointer;
         }
 
-        .chat:hover{
+        .chat:hover {
             color: #007bff !important;
         }
-        .dark-mode .chat{
+
+        .dark-mode .chat {
             color: #fff;
         }
+
         .dark-mode-button {
             position: absolute;
         }
@@ -89,6 +96,7 @@
             width: 40px;
             height: 40px;
         }
+
         .chat .badge {
             position: absolute;
             top: -10px;
@@ -100,7 +108,8 @@
             color: white;
             font-size: 12px;
         }
-        .search{
+
+        .search {
             position: absolute;
             top: 20px;
             z-index: 999;
@@ -112,12 +121,15 @@
             font-size: 40px;
             cursor: pointer;
         }
-        .search:hover{
+
+        .search:hover {
             color: #007bff !important;
         }
-        .dark-mode .search{
+
+        .dark-mode .search {
             color: #fff;
         }
+
         @yield('style')
     </style>
 </head>
@@ -145,6 +157,7 @@
         </a>
     </div>
     @yield('content')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const darkModeButton = document.querySelector('.dark-mode-button');
 
@@ -152,6 +165,18 @@
             document.body.classList.toggle('dark-mode');
             darkModeButton.classList.toggle('dark-mode');
         }
+        @if (session('message'))
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'پیام جدید!',
+                text: '{{ session('message') }}',
+                icon: 'info',
+                confirmButtonText: 'باشه',
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        })
+        @endif
     </script>
     <script src="{{ asset('js/passwordhide.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>

@@ -88,7 +88,7 @@ class SiteController extends Controller
         $img->move('files/posts/', $imgName);
         $post->image = 'files/posts/' . $imgName;
         $post->save();
-        return redirect('/');
+        return redirect('/')->with('message', 'پست شما با موفقیت ایجاد شد');
     }
     public function delete($id)
     {
@@ -98,7 +98,7 @@ class SiteController extends Controller
         if (Auth::user()->id == Post::find($id)->user_id || Auth::user()->email == 'amirdashti264@gmail.com') {
             $post = Post::find($id);
             $post->delete();
-            return redirect('/');
+            return redirect('/')->with('message', 'پست شما با موفقیت حذف شد');
         }
         return abort(403);
     }
@@ -164,7 +164,7 @@ class SiteController extends Controller
             $user->avatar = 'https://www.gravatar.com/avatar/' . hash('sha256', strtolower(trim($user->email))) . '?d=mp';
         }
         $user->save();
-        return redirect('/profile');
+        return redirect('/profile')->with('message', 'پروفایل شما با موفقیت ویرایش شد');
     }
     public function show($id)
     {
