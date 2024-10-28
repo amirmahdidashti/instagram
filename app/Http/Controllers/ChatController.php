@@ -39,7 +39,7 @@ class ChatController extends Controller
         if ($chat->user_1 != Auth::user()->id && $chat->user_2 != Auth::user()->id) {
             return abort(403);
         }
-        $messages = message::where('chat_id', $id)->get();
+        $messages = Message::where('chat_id', $id)->get();
         $user = User::find($chat->user_2);
         if ($user == Auth::user()) {
             $user = User::find($chat->user_1);
@@ -58,5 +58,18 @@ class ChatController extends Controller
         $message->chat_id = $id;
         $message->save();
         return redirect('/chat/' . $id);
+    }
+
+    public function chats()
+    {
+        $chats = Chat::where('user_1', Auth::user()->id)->orWhere('user_2', Auth::user()->id)->get();
+        foreach ($chats as $chat) {
+            $chat->user = User::find($chat->user_2);
+            if ($chat->user == Auth::user()) {
+                $chat->user = User::find($chat->user_1);
+            }
+            $chat->lastMessage = Message::where('chat_id', $chat->id)->latest()->first();
+        }
+        return view('chats', compact('chats'));
     }
 }
