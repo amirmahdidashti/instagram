@@ -14,23 +14,23 @@ box-shadow: 2px 1px 5px 1px rgba(0, 0, 0, 0.273);
 
 }
 #search{
-    border:none;
-    width:350px;
-    font-size: 15px;
+border:none;
+width:350px;
+font-size: 15px;
 }
 #search:focus{
-    outline: none;
+outline: none;
 }
 .search-icon{
-    margin: 10px;
-    color:rgba(0, 0, 0, 0.564);
+margin: 10px;
+color:rgba(0, 0, 0, 0.564);
 }
 #search-button{
-    border:none;
-    cursor: pointer;
-    color:#fff;
-    background-color:#1dbf73;
-    padding:0px 10px;
+border:none;
+cursor: pointer;
+color:#fff;
+background-color:#1dbf73;
+padding:0px 10px;
 }
 
 .user-profile{
@@ -55,36 +55,44 @@ padding:5px;
 }
 @endsection
 @section('content')
-<form action="" method="get" style="display:flex;justify-content:center;margin-top:70px">
+<div style="display:flex;justify-content:center;margin-top:70px">
     <div id="search-wrapper">
         <i class="search-icon fas fa-search"></i>
-        <input type="text" name="s" id="search" value="{{$s}}" placeholder="نام کاربری">
-        <button id="search-button">جستجو</button>
+        <input type="text" onkeyup="search()" id="search" placeholder="نام کاربری">
     </div>
-<form>
-<div class="users">
-    @foreach ($users as $user)
-       <div class="user">
-            <img class="user-profile" src="{{asset($user->avatar)}}">
-            <a href="/profile/{{$user->id}}">{{$user->name}}</a>
-       </div>
-    @endforeach
+<div id="users" class="users">
 </div>
 <script>
-var search=document.getElementById('search');
+    var search = document.getElementById('search');
+    search.addEventListener('focus', (event) => {
 
+        document.getElementById('search-wrapper').style.border = "1px solid #1dbf73";
 
-search.addEventListener('focus',(event)=>{
+    });
 
-  document.getElementById('search-wrapper').style.border="1px solid #1dbf73";
+    search.addEventListener('focusout', (event) => {
 
-});
+        document.getElementById('search-wrapper').style.border = "1px solid rgba(0, 0, 0, 0.276)";
 
+    });
+</script>
+<script>
+    function search() {
+        var search = document.getElementById('search');
+        var xhttp = new XMLHttpRequest();
+        xhttp.onload = function () {
+            var users = JSON.parse(this.responseText);
+            document.getElementById('users').innerHTML = "";
+            users.forEach(user => {
+                document.getElementById('users').innerHTML += `<div class="user">
+                    <img class="user-profile" src="${user.avatar}">
+                    <a href="/profile/${user.id}">${user.name}</a>
+                </div>`;
+            });
+        };
 
-search.addEventListener('focusout',(event)=>{
-
-document.getElementById('search-wrapper').style.border="1px solid rgba(0, 0, 0, 0.276)";
-
-});
+        xhttp.open("GET", "/search?s=" + search.value);
+        xhttp.send();
+    }
 </script>
 @endsection

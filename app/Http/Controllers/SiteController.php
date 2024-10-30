@@ -27,12 +27,10 @@ class SiteController extends Controller
     {
         if (isset($req->s)) {
             $s = $req->s;
+            $users = User::where('name','like','%'.$req->s.'%')->get();
+            return $users;
         }
-        else{
-            $s = "";
-        }
-        $users = User::where('name','like','%'.$req->s.'%')->get();
-        return view('search', compact('users','s'));
+        return view('search');
     }
     public function all()
     {

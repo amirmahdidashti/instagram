@@ -44,20 +44,17 @@ class ChatController extends Controller
         if ($user == Auth::user()) {
             $user = User::find($chat->user_1);
         }
-        return view('chat', compact('messages', 'user'));
+        return view('chat', compact('messages', 'user','id'));
     }
 
     public function newMessage(Request $request, $id)
     {
-        $request->validate([
-            'message' => 'required',
-        ]);
         $message = new message();
         $message->text = $request->message;
         $message->sender_id = Auth::user()->id;
         $message->chat_id = $id;
         $message->save();
-        return redirect('/chat/' . $id);
+        return abort(200);
     }
 
     public function chats()

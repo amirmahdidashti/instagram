@@ -95,27 +95,33 @@ display: block;
 <div class="chat-container">
     <div id="chat-messages" class="chat-messages">
         @foreach ($messages as $message)
-                <div
-                    class="message {{ $message->sender_id == Auth::user()->id ? 'user' : 'other' }}">
-                    {{ $message->text }}
-                </div>
+            <div class="message {{ $message->sender_id == Auth::user()->id ? 'user' : 'other' }}">
+                {{ $message->text }}
+            </div>
         @endforeach
+        
     </div>
-    <form action="" method="post" class="chat-input">
+    <div class="chat-input">
         @csrf
-        <input type="text" name="message" autofocus placeholder="پیام خود را بنویسید...">
-        <button>ارسال</button>
-    </form>
+        <input type="text" id="message-input" autofocus placeholder="پیام خود را بنویسید...">
+        <button onclick="sendMessage()">ارسال</button>
+    </div>
 </div>
 <script>
     const chatMessages = document.getElementById('chat-messages');
-    function scrollToBottom() {
-        const messages = chatMessages.getElementsByClassName('message ');
-        if (messages.length > 0) {
-            messages[messages.length - 1].scrollIntoView({ behavior: 'smooth' });
-        }
+    const messageInput = document.getElementById('message-input');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    function sendMessage() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function () {
+            chatMessages.innerHTML += '<div class="message user">' + messageInput.value + '</div>';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            messageInput.value = '';
+        };
+        
+        xhttp.open("POST", '/chat/{{ $id }}');
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send('_token={{ csrf_token() }}&message=' + messageInput.value);
     }
-
-    scrollToBottom();
 </script>
 @endsection
