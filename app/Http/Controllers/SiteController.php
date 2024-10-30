@@ -178,17 +178,18 @@ class SiteController extends Controller
     public function follow($id)
     {
         if (Auth::user()->id == $id) {
-            return redirect('/profile/' . $id);
+            return abort(403);
         }
         elseif (Follower::where('follower_id', Auth::user()->id)->where('following_id', $id)->first()!=null) {
             Follower::where('follower_id', Auth::user()->id)->where('following_id', $id)->delete();
+            return "دنبال کردن";
         }
         else{
             $follower = new Follower();
             $follower->follower_id = Auth::user()->id;
             $follower->following_id = $id;
             $follower->save();
+            return "لغو دنبال کردن";
         }
-        return redirect('/profile/' . $id);
     }
 }

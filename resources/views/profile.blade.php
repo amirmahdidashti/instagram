@@ -101,7 +101,7 @@ border-radius: 0px !important;
             کنندگان</button><button onclick="openpopup('following-popup')" class="btn popup-btn" id="following">دنبال
             شوندگان</button>
     </div>
-    <a href="/profile/{{$user->id}}/posts" class="btn">پست ها</a>
+    <a  class="btn">پست ها</a>
     @if (Auth::user()->id == $user->id)
         <a href="/logout" style="background-color: red !important;" class="btn">خروج</a></a>
         <button onclick="toggleDisplay('edit-form')" class="btn popup-btn" id="edit">ویرایش</button>
@@ -150,9 +150,9 @@ border-radius: 0px !important;
         </form>
     @else
         @if ($user->followers->contains(Auth::user()))
-            <a href="/profile/{{$user->id}}/follow" class="btn">لغو دنبال کردن</a>
+            <button onclick="follow()" id="follow"  class="btn">لغو دنبال کردن</button>
         @else
-            <a href="/profile/{{$user->id}}/follow" class="btn">دنبال کردن</a>
+            <button onclick="follow()"  id="follow" class="btn">دنبال کردن</button>
         @endif
         <p>{{$user->name}}</p>
         <p>{{$user->email}}</p>
@@ -179,11 +179,29 @@ border-radius: 0px !important;
         <h2>دنبال کنندگان</h2>
         <ul class="list">
             @foreach ($user->followers as $follower)
-                <li>
+                <li {{$follower->id == auth()->user()->id ? 'id=user' : ''}}>
                     <a href="/profile/{{$follower->id}}">{{$follower->name}} </a>
                 </li>
             @endforeach
         </ul>
     </div>
 </div>
+<script>
+    function follow() {
+        data = $.ajax({
+            url: '/profile/{{ $user->id }}/follow',
+            type: 'get',
+            success: function() {
+                document.getElementById('follow').innerHTML = data.responseText;
+                var listItems = document.querySelectorAll(".list");
+                if (data.responseText == "دنبال کردن") {
+                    document.getElementById('user').style.display = "none";
+                } else {
+                    div = '<li id="user"><a href="/profile/{{auth()->user()->id}}">{{auth()->user()->name}} </a></li>';
+                    listItems[1].innerHTML += div;
+                }
+            }
+        })
+    }
+</script>
 @endsection

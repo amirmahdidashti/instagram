@@ -90,12 +90,12 @@ width: 100%;
 @section('content')
 <div class="posts">
     @foreach ($posts as $post)
-        <div class="post">
-            <a href="/profile/{{$post->user_id}}" class="post-profile">
+        <div id="post-{{$post->id}}" class="post">
+            <a href="" class="post-profile">
                 <img src="{{asset($post->user_avatar)}}">
             </a>
             @if (Auth::user()->id == $post->user_id || Auth::user()->email == 'amirdashti264@gmail.com')
-                <a href="/delete/{{$post->id}}" class="post-delete">
+                <a href="javascript:void(0)" class="post-delete" onclick="deletePost({{$post->id}})">
                     <i class="fas fa-trash"></i>
                 </a>
             @endif
@@ -110,5 +110,19 @@ width: 100%;
         <a style="text-align: center;" href="/all">همه پست ها</a>
     @endif
 </div>
-
+<script>
+    function deletePost(id) {
+        $.ajax({
+            url: '/delete/' + id,
+            type: 'get',
+            success: function() {
+                document.getElementById('post-' + id).remove();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'پست با موفقیت حذف شد',
+                })
+            }
+        });
+    }
+</script>
 @endsection

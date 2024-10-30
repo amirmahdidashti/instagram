@@ -79,20 +79,20 @@ padding:5px;
 <script>
     function search() {
         var search = document.getElementById('search');
-        var xhttp = new XMLHttpRequest();
-        xhttp.onload = function () {
-            var users = JSON.parse(this.responseText);
-            document.getElementById('users').innerHTML = "";
-            users.forEach(user => {
-                document.getElementById('users').innerHTML += `<div class="user">
-                    <img class="user-profile" src="${user.avatar}">
-                    <a href="/profile/${user.id}">${user.name}</a>
-                </div>`;
-            });
-        };
-
-        xhttp.open("GET", "/search?s=" + search.value);
-        xhttp.send();
+        data = $.ajax({
+            url:  "/search?s=" + search.value,
+            type: 'get',
+            success: function() {
+                var users = JSON.parse(data.responseText);
+                document.getElementById('users').innerHTML = "";
+                users.forEach(user => {
+                    document.getElementById('users').innerHTML += `<div class="user">
+                        <img class="user-profile" src="${user.avatar}">
+                        <a href="/profile/${user.id}">${user.name}</a>
+                    </div>`;
+                });
+            }
+        });
     }
 </script>
 @endsection

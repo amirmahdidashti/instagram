@@ -111,17 +111,25 @@ display: block;
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message-input');
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    document.addEventListener('keydown', function(event) {
+        if (event.keyCode === 13) {
+            sendMessage();
+        }
+    });
     function sendMessage() {
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function () {
-            chatMessages.innerHTML += '<div class="message user">' + messageInput.value + '</div>';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            messageInput.value = '';
-        };
-        
-        xhttp.open("POST", '/chat/{{ $id }}');
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send('_token={{ csrf_token() }}&message=' + messageInput.value);
+        $.ajax({
+            url: '/chat/{{ $id }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                message: messageInput.value
+            },
+            type: 'post',
+            success: function() {
+                chatMessages.innerHTML += '<div class="message user">' + messageInput.value + '</div>';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                messageInput.value = '';
+            }
+        })
     }
 </script>
 @endsection
