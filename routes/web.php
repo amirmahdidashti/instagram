@@ -39,5 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{id}/chat', [ChatController::class, 'newChat']);
     Route::get('/profile/{id}/follow', [SiteController::class, 'follow']);
     Route::get('/profile/{id}/posts', [SiteController::class, 'userPosts']);
+    Route::get('/{id}', [SiteController::class, 'show']);
+    Route::post('/{id}', [SiteController::class, 'comment']);
 });
-Route::get('/{id}', [SiteController::class, 'show']);

@@ -6,11 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Follower;
+use App\Models\Comment;
+use Carbon\Carbon;
 use Auth;
 use Validator;
 use Hash;
+carbon::setLocale('fa');
 class SiteController extends Controller
 {
+
     public function index()
     {
         $myFollowing = Follower::where('follower_id', Auth::user()->id)->pluck('following_id');
@@ -170,10 +174,31 @@ class SiteController extends Controller
         if (!$post) {
             return abort(404);
         }
-        $user = User::find($post->user_id);
-        $post->user_avatar = $user->avatar;
-        $post->user_id = $user->id;
+        $post->comments = Comment::where('post_id', $id)->get();
+        foreach ($post->comments as $comment) {
+            $comment->user = User::find($comment->user_id);
+            $comment->date = $comment->created_at->diffForHumans();
+        }
         return view('post', compact('post'));
+    }
+    public function comment(Request $req,$id)
+    {
+        $message = [
+            'body.required' => 'متن نباید خالی باشد',
+        ];
+        $roles = [
+            'body' => 'required',
+        ];
+        $validator = Validator::make($req->all(), $roles, $message);
+        if ($validator->fails()) {
+            return abort(500);
+        }
+        $comment = new Comment();
+        $comment->user_id = Auth::user()->id;
+        $comment->post_id = $id;
+        $comment->body = $req->body;
+        $comment->save();
+        return 1;
     }
     public function follow($id)
     {
