@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Follower;
-use App\Models\Comment;
+use App\Models\comment;
 use Carbon\Carbon;
 use Auth;
 use Validator;
