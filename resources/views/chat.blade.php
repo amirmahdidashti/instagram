@@ -99,7 +99,7 @@ display: block;
                 {{ $message->text }}
             </div>
         @endforeach
-        
+
     </div>
     <div class="chat-input">
         @csrf
@@ -111,7 +111,7 @@ display: block;
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message-input');
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         if (event.keyCode === 13) {
             sendMessage();
         }
@@ -123,13 +123,25 @@ display: block;
                 _token: '{{ csrf_token() }}',
                 message: messageInput.value
             },
-            type: 'post',
-            success: function() {
-                chatMessages.innerHTML += '<div class="message user">' + messageInput.value + '</div>';
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                messageInput.value = '';
-            }
+            type: 'post'
         })
     }
+
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('afe67a7ef0421517e32b', {
+        cluster: 'ap2'
+    });
+
+    var channel = pusher.subscribe('{{$id}}');
+    channel.bind('new-message', function (data) {
+        if (data.sender_id == {{Auth::user()->id}}) {
+            chatMessages.innerHTML += '<div class="message user">' + data.text + '</div>';
+        }
+        else{
+            chatMessages.innerHTML += '<div class="message other">' + data.text + '</div>';
+        }
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        messageInput.value = '';
+    });
 </script>
 @endsection

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Models\User;
 use App\Models\message;
+use Pusher\Pusher;
 use Auth;
 class ChatController extends Controller
 {
@@ -54,7 +55,20 @@ class ChatController extends Controller
         $message->sender_id = Auth::user()->id;
         $message->chat_id = $id;
         $message->save();
-        return abort(200);
+
+        $options = array(
+          'cluster' => 'ap2',
+          'useTLS' => true
+        );
+        $pusher = new Pusher(
+          'afe67a7ef0421517e32b',
+          'c24f93b8becbbcfac33c',
+          '1891907',
+          $options
+        );
+        $data = $message;
+        $pusher->trigger($id , 'new-message', $data);
+        return 1;
     }
 
     public function chats()
