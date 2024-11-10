@@ -45,6 +45,12 @@ class ChatController extends Controller
         if ($user == Auth::user()) {
             $user = User::find($chat->user_1);
         }
+        foreach ($messages as $message) {
+            if ($message->sender_id != Auth::user()->id) {
+                $message->seen = 1;
+                $message->save();
+            }
+        }
         return view('chat', compact('messages', 'user','id'));
     }
 

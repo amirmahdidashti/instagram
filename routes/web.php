@@ -25,7 +25,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/', [SiteController::class, 'index']);
-    Route::get('/chat/{id}', [ChatController::class, 'chat']);
+    Route::get('/chat/{id}', [ChatController::class, 'chat'])->name('chat');
     Route::get('/chat', [ChatController::class, 'chats']);
     Route::post('/chat/{id}', [ChatController::class, 'newMessage']);
     Route::get('/search', [SiteController::class, 'search']);

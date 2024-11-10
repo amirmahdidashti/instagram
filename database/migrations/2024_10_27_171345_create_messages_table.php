@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('chat_id');
             $table->bigInteger('sender_id');
             $table->text('text');
+            $table->tinyInteger('seen')->default(0);
             $table->timestamps();
         });
     }
