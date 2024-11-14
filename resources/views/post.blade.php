@@ -63,7 +63,7 @@ line-height: 1.4;
                 <img src="{{asset($comment->user->avatar)}}" alt="پروفایل کاربر">
                 <div class="comment-content">
                     <div class="comment-author">{{ $comment->user->name }}</div>
-                    <div class="comment-time">{{ $comment->date }}</div>
+                    <div class="comment-time">{{ $comment->created_at->diffForHumans() }}</div>
                     <div class="comment-text">{{ $comment->body }}</div>
                 </div>
             </div>

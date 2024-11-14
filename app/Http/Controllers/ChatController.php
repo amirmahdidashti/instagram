@@ -40,13 +40,13 @@ class ChatController extends Controller
         if ($chat->user_1 != Auth::user()->id && $chat->user_2 != Auth::user()->id) {
             return abort(403);
         }
-        $messages = Message::where('chat_id', $id)->get();
+        $messages = $chat->messages;
         $user = User::find($chat->user_2);
         if ($user == Auth::user()) {
             $user = User::find($chat->user_1);
         }
         foreach ($messages as $message) {
-            if ($message->sender_id != Auth::user()->id) {
+            if ($message->user_id != Auth::user()->id) {
                 $message->seen = 1;
                 $message->save();
             }
@@ -58,8 +58,8 @@ class ChatController extends Controller
     {
         $message = new message();
         $message->text = $request->message;
-        $message->sender_id = Auth::user()->id;
-        $message->chat_id = $id;
+        $message->user()->associate(Auth::user());
+        $message->chat()->associate(Chat::findOrFail($id));
         $message->save();
 
         $options = array(

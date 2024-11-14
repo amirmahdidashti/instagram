@@ -105,7 +105,7 @@ h1 {
                     </div>
                     <div class="chat-info">
                         <span class="chat-name">{{ $chat->user->name }}</span>
-                        <p class="last-message">{{ $chat->lastMessage ?(($chat->lastMessage->sender_id == Auth::user()->id ? 'شما' : $chat->user->name ) .' : '.$chat->lastMessage->text) : 'بدون پیام' }}</p>
+                        <p class="last-message">{{ $chat->lastMessage ?(($chat->lastMessage->user_id == Auth::user()->id ? 'شما' : $chat->user->name ) .' : '.$chat->lastMessage->text) : 'بدون پیام' }}</p>
                     </div>
                 </a>
             </li>

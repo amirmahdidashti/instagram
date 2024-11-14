@@ -23,9 +23,9 @@ class GetSeenCount
             return $next($request);
         }
         $chats = Chat::where('user_1', Auth::user()->id)->orWhere('user_2', Auth::user()->id)->pluck('id');
-        $count = message::whereIn('chat_id',$chats)->where('sender_id','!=',Auth::user()->id)->where('seen',0)->count();
+        $count = message::whereIn('chat_id',$chats)->where('user_id','!=',Auth::user()->id)->where('seen',0)->count();
         if($request->route()->getName() == 'chat'){
-            $count = $count - message::where('chat_id', $request->id)->where('sender_id','!=',Auth::user()->id)->where('seen',0)->count();
+            $count = $count - message::where('chat_id', $request->id)->where('user_id','!=',Auth::user()->id)->where('seen',0)->count();
         }
         View::share('unreadCount',$count);
         return $next($request);

@@ -92,9 +92,9 @@ width: 100%;
     @foreach ($posts as $post)
         <div id="post-{{$post->id}}" class="post">
             <a href="" class="post-profile">
-                <img src="{{asset($post->user_avatar)}}">
+                <img src="{{asset($post->user->avatar)}}">
             </a>
-            @if (Auth::user()->id == $post->user_id || Auth::user()->email == 'amirdashti264@gmail.com')
+            @if (Auth::user()->id == $post->user->id || Auth::user()->email == 'amirdashti264@gmail.com')
                 <a href="javascript:void(0)" class="post-delete" onclick="deletePost({{$post->id}})">
                     <i class="fas fa-trash"></i>
                 </a>

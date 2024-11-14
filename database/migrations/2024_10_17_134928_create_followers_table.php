@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('followers', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('follower_id');
-            $table->bigInteger('following_id');
+            $table->unsignedBigInteger('follower_id');
+            $table->unsignedBigInteger('following_id');
             $table->timestamps();
         });
     }

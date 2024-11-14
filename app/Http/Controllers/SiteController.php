@@ -19,12 +19,6 @@ class SiteController extends Controller
     {
         $myFollowing = Follower::where('follower_id', Auth::user()->id)->pluck('following_id');
         $posts = Post::whereIn('user_id', $myFollowing)->get()->reverse();
-        foreach ($posts as $post) {
-            $user = User::find($post->user_id);
-            $post->user_avatar = $user->avatar;
-            $post->user_id = $user->id;
-        }
-        
         return view('index', compact('posts'));
     }
 	public function search(Request $req)
@@ -39,21 +33,12 @@ class SiteController extends Controller
     public function all()
     {
         $posts = Post::all()->reverse();
-        foreach ($posts as $post) {
-            $user = User::find($post->user_id);
-            $post->user_avatar = $user->avatar;
-            $post->user_id = $user->id;
-        }
         return view('index', compact('posts'));   
     }
     public function userPosts($id)
     {
-        $posts = Post::where('user_id', $id)->get()->reverse();
-        foreach ($posts as $post) {
-            $user = User::find($post->user_id);
-            $post->user_avatar = $user->avatar;
-            $post->user_id = $user->id;
-        }
+        $user = User::findOrFail($id);
+        $posts = $user->posts;
         return view('index', compact('posts'));
     }
     public function newpost()
@@ -82,7 +67,7 @@ class SiteController extends Controller
         }
         $user = Auth::user();
         $post = new Post();
-        $post->user_id = $user->id;
+        $post->user()->associate($user);
         $post->title = $req->title;
         $post->body = $req->body;
         $img = $req->file('image');
@@ -94,10 +79,7 @@ class SiteController extends Controller
     }
     public function delete($id)
     {
-        if (!Post::find($id)) {
-            return abort(404);
-        }
-        if (Auth::user()->id == Post::find($id)->user_id || Auth::user()->email == 'amirdashti264@gmail.com') {
+        if (Auth::user()->id == Post::findOrFail($id)->user_id || Auth::user()->email == 'amirdashti264@gmail.com') {
             $post = Post::find($id);
             $post->delete();
             return redirect('/')->with('message', 'پست شما با موفقیت حذف شد');
@@ -107,12 +89,9 @@ class SiteController extends Controller
     public function profile($id = null)
     {
         if ($id) {
-            $user = User::find($id);
+            $user = User::findOrFail($id);
         } else {
             $user = Auth::user();
-        }
-        if (!$user) {
-            return abort(404);
         }
         $followers_id = Follower::where('following_id', $user->id)->pluck('follower_id');
         $followers = User::whereIn('id', $followers_id)->get();
@@ -122,6 +101,7 @@ class SiteController extends Controller
         $user->following = $following;
         return view('profile', compact('user'));
     }
+
     public function profilePost(Request $req)
     {
         $message = [
@@ -170,15 +150,7 @@ class SiteController extends Controller
     }
     public function show($id)
     {
-        $post = Post::find($id);
-        if (!$post) {
-            return abort(404);
-        }
-        $post->comments = Comment::where('post_id', $id)->get();
-        foreach ($post->comments as $comment) {
-            $comment->user = User::find($comment->user_id);
-            $comment->date = $comment->created_at->diffForHumans();
-        }
+        $post = Post::findOrFail($id);
         return view('post', compact('post'));
     }
     public function comment(Request $req,$id)
@@ -194,8 +166,8 @@ class SiteController extends Controller
             return abort(500);
         }
         $comment = new Comment();
-        $comment->user_id = Auth::user()->id;
-        $comment->post_id = $id;
+        $comment->user()->associate(Auth::user());
+        $comment->post()->associate(Post::findOrFail($id));
         $comment->body = $req->body;
         $comment->save();
         return 1;
