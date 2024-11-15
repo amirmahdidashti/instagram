@@ -102,7 +102,14 @@ width: 100%;
             <img src="{{asset($post->image)}}" alt="{{$post->title}}">
             <div class="post-desc">
                 <a href="/{{$post->id}}" style="font-weight: bold;">{{$post->title}}</a>
-                <p>{{$post->body}}</p>
+                <p>
+                خلاصه شده:
+                <br>
+                {{Illuminate\Support\Facades\Http::asForm()->post('https://amirdashtitest.ir/ai', ['question' => 'در حد 4 جمله خلاصه کن بدون حرف اضافه اگه به خطا برخوردی هیچی نگو اگه نامهفهوم بود بنویس نامفهوم است:'.$post->body])}}
+                <br>
+                کامل:
+                <br>
+                {{$post->body}}</p>
             </div>
         </div>
     @endforeach
