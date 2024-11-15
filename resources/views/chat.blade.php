@@ -95,7 +95,7 @@ display: block;
 <div class="chat-container">
     <div id="chat-messages" class="chat-messages">
         @foreach ($messages as $message)
-            <div class="message {{ $message->user_id == Auth::user()->id ? 'user' : 'other' }}">
+            <div class="message {{ $message->sender_id == Auth::user()->id ? 'user' : 'other' }}">
                 {{ $message->text }}
             </div>
         @endforeach
@@ -104,26 +104,53 @@ display: block;
     <div class="chat-input">
         @csrf
         <input type="text" id="message-input" autofocus placeholder="پیام خود را بنویسید...">
-        <button onclick="sendMessage()">ارسال</button>
+        <button id="btn-send" onclick="sendMessage()" style="font-size: 20px">ارسال</button>
     </div>
 </div>
 <script>
+    var doing = false;
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message-input');
     chatMessages.scrollTop = chatMessages.scrollHeight;
     document.addEventListener('keydown', function (event) {
-        if (event.keyCode === 13) {
+        if (event.keyCode === 13 && !doing) {
             sendMessage();
         }
     });
     function sendMessage() {
+        document.getElementById('btn-send').innerHTML = '<i class="fas fa-spin fa-gear" ></i>';
+        doing = true;
+        document.getElementById('btn-send').setAttribute('onclick', '');
         $.ajax({
             url: '/chat/{{ $id }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 message: messageInput.value
             },
-            type: 'post'
+            type: 'post',
+            success: function () {
+                document.getElementById('btn-send').innerHTML = 'ارسال';
+                document.getElementById('btn-send').setAttribute('onclick', 'sendMessage()');
+                doing = false;
+            },
+            error: function () {
+                document.getElementById('btn-send').innerHTML = 'ارسال';
+                document.getElementById('btn-send').setAttribute('onclick', 'sendMessage()');
+                document.getElementById('btn-send').style.backgroundColor = 'red';
+                document.getElementById('btn-send').innerHTML = '<i class="fas fa-exclamation-triangle" ></i>';
+                messageInput.placeholder = 'خطا در ارسال پیام!'; // نمایش پیام خطا
+                setTimeout(function () {
+                    document.getElementById('btn-send').style.backgroundColor = '';
+                    document.getElementById('btn-send').innerHTML = 'ارسال';
+                    messageInput.placeholder = 'پیام خود را بنویسید...'; // بازگشت به متن اولیه
+                }, 3000);
+                messageInput.addEventListener('keydown', function () {
+                    document.getElementById('btn-send').style.backgroundColor = '';
+                    document.getElementById('btn-send').innerHTML = 'ارسال';
+                });
+                document.getElementById('btn-send').setAttribute('onclick', 'sendMessage()');
+                doing = false;
+            }
         })
     }
 
@@ -134,10 +161,10 @@ display: block;
 
     var channel = pusher.subscribe('{{$id}}');
     channel.bind('new-message', function (data) {
-        if (data.user_id == {{Auth::user()->id}}) {
+        if (data.sender_id == {{Auth::user()->id}}) {
             chatMessages.innerHTML += '<div class="message user">' + data.text + '</div>';
         }
-        else{
+        else {
             chatMessages.innerHTML += '<div class="message other">' + data.text + '</div>';
         }
         chatMessages.scrollTop = chatMessages.scrollHeight;
