@@ -8,24 +8,31 @@ use App\Models\Post;
 use App\Models\Follower;
 use App\Models\comment;
 use Carbon\Carbon;
+use App\Models\Image;
 use Auth;
 use Validator;
 use Hash;
 carbon::setLocale('fa');
 class SiteController extends Controller
 {
-
     public function index()
     {
         $myFollowing = Follower::where('follower_id', Auth::user()->id)->pluck('following_id');
         $posts = Post::whereIn('user_id', $myFollowing)->get()->reverse();
-        return view('index', compact('posts'));
+        foreach ($posts as $post) {
+            $post->images = Image::where('type', 1)->where('subject_id', $post->id)->get();
+            $post->user->avatar = Image::where('type', 0 )->where('subject_id', $post->user_id)->first()->image;
+        }
+        return view('index', compact('posts'))->with('title', 'خانه');
     }
 	public function search(Request $req)
     {
         if (isset($req->s)) {
             $s = $req->s;
             $users = User::where('name','like','%'.$req->s.'%')->get();
+            foreach ($users as   $user) {
+                $user->avatar = Image::where('type', 0 )->where('subject_id', $user->id)->first()->image;
+            }
             return $users;
         }
         return view('search');
@@ -33,13 +40,21 @@ class SiteController extends Controller
     public function all()
     {
         $posts = Post::all()->reverse();
-        return view('index', compact('posts'));   
+        foreach ($posts as $post) {
+            $post->images = Image::where('type', 1)->where('subject_id', $post->id)->get();
+            $post->user->avatar = Image::where('type', 0 )->where('subject_id', $post->user_id)->first()->image;
+        }
+        return view('index', compact('posts'))->with('title', 'همه پست ها');;   
     }
     public function userPosts($id)
     {
         $user = User::findOrFail($id);
         $posts = $user->posts;
-        return view('index', compact('posts'));
+        foreach ($posts as $post) {
+            $post->images = Image::where('type', 1)->where('subject_id', $post->id)->get();
+            $post->user->avatar = Image::where('type', 0 )->where('subject_id', $post->user_id)->first()->image;
+        }
+        return view('index', compact('posts'))->with('title', 'پست های ' . $user->name );;
     }
     public function newpost()
     {
@@ -59,7 +74,7 @@ class SiteController extends Controller
         $roles = [
             'title' => 'required|min:5',
             'body' => 'required|min:10',
-            'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'image.*' => 'required|mimes:jpeg,png,jpg,gif,svg|max:5120',
         ];
         $validator = Validator::make($req->all(), $roles, $message);
         if ($validator->fails()) {
@@ -70,11 +85,13 @@ class SiteController extends Controller
         $post->user()->associate($user);
         $post->title = $req->title;
         $post->body = $req->body;
-        $img = $req->file('image');
-        $imgName = time() . "." . $img->getClientOriginalExtension();
-        $img->move('files/posts/', $imgName);
-        $post->image = 'files/posts/' . $imgName;
+        $post->images;
         $post->save();
+        foreach ($req->file('image') as $img) {
+            $imgName =  uniqid().".".$img->getClientOriginalExtension();
+            $img->move('files/posts/', $imgName);
+            Image::create(['image' =>  'files/posts/' . $imgName, 'type' => 1 , 'subject_id' => $post->id]);
+        }
         return redirect('/')->with('message', 'پست شما با موفقیت ایجاد شد');
     }
     public function delete($id)
@@ -99,6 +116,7 @@ class SiteController extends Controller
         $following = User::whereIn('id', $following_id)->get();
         $user->followers = $followers;
         $user->following = $following;
+        $user->avatar = Image::where('type', 0 )->where('subject_id', $user->id)->first()->image;
         return view('profile', compact('user'));
     }
 
@@ -151,6 +169,9 @@ class SiteController extends Controller
     public function show($id)
     {
         $post = Post::findOrFail($id);
+        foreach ($post->userComments as $user) {
+            $user->avatar = Image::where('type', 0 )->where('subject_id', $user->id)->first()->image;
+        }
         return view('post', compact('post'));
     }
     public function comment(Request $req,$id)
@@ -165,11 +186,8 @@ class SiteController extends Controller
         if ($validator->fails()) {
             return abort(500);
         }
-        $comment = new Comment();
-        $comment->user()->associate(Auth::user());
-        $comment->post()->associate(Post::findOrFail($id));
-        $comment->body = $req->body;
-        $comment->save();
+        $post = Post::findOrFail($id);
+        $post->userComments()->attach(Auth::user()->id, ['body' => $req->body]);
         return 1;
     }
     public function follow($id)

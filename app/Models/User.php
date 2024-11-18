@@ -49,9 +49,9 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
-    public function comments()
+    public function postComments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->belongsToMany(Post::class, 'comments')->withTimestamps()->withPivot('body');
     }
 
     public function messages()

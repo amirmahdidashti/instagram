@@ -11,7 +11,12 @@
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>{{ $title ?? 'Page Title' }}</title>
-
+    <script src="
+https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js
+"></script>
+    <link href="
+https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css
+" rel="stylesheet">
     <style>
         .profile {
             position: absolute;
@@ -142,7 +147,7 @@
             <i class="fas fa-sun "></i>
         </button>
         <a href="/profile" class="profile">
-            <img src="{{asset(auth()->user()->avatar)}}">
+            <img src="{{asset($avatar)}}">
         </a>
         <a href="/newpost" class="add">
             <i class="fas fa-plus"></i>
@@ -168,16 +173,16 @@
             darkModeButton.classList.toggle('dark-mode');
         }
         @if (session('message'))
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                title: 'پیام جدید!',
-                text: '{{ session('message') }}',
-                icon: 'info',
-                confirmButtonText: 'باشه',
-                timer: 2000,
-                timerProgressBar: true,
-            });
-        })
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: 'پیام جدید!',
+                    text: '{{ session('message') }}',
+                    icon: 'info',
+                    confirmButtonText: 'باشه',
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            })
         @endif
     </script>
     <script src="{{ asset('js/passwordhide.js') }}"></script>

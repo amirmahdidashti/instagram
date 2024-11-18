@@ -1,6 +1,4 @@
 @extends('layouts.master')
-@php $title = 'خانه';
-@endphp
 @section('style')
 .posts {
 margin-top: 50px;
@@ -38,6 +36,7 @@ color: #333;
 line-height: 40px;
 font-size: 40px;
 cursor: pointer;
+z-index: 999;
 }
 .post-delete:hover{
 color: #007bff !important;
@@ -58,10 +57,10 @@ padding-bottom: 10px;
 color: #FFF;
 }
 .post img {
-width: 75%;
+width: 100%;
 height: 100%;
+object-fit: cover;
 }
-
 .post-desc {
 margin-right: 10px;
 overflow-y: auto;
@@ -81,7 +80,7 @@ flex-direction: column;
 .post-desc {
 margin-right: 0px;
 }
-.post img {
+.post .splide {
 width: 100%;
 }
 }
@@ -91,7 +90,7 @@ width: 100%;
 <div class="posts">
     @foreach ($posts as $post)
         <div id="post-{{$post->id}}" class="post">
-            <a href="" class="post-profile">
+            <a href="/profile/{{$post->user->id}}" class="post-profile">
                 <img src="{{asset($post->user->avatar)}}">
             </a>
             @if (Auth::user()->id == $post->user->id || Auth::user()->email == 'amirdashti264@gmail.com')
@@ -99,7 +98,16 @@ width: 100%;
                     <i class="fas fa-trash"></i>
                 </a>
             @endif
-            <img src="{{asset($post->image)}}" alt="{{$post->title}}">
+            <section dir="ltr" class="splide" aria-label="Splide Basic HTML Example">
+                <div class="splide__track">
+                	<ul class="splide__list">
+                        @foreach ($post->images as $img)
+                            <li class="splide__slide"><img src="{{asset($img->image)}}" alt="{{$post->title}}"></li>
+                        @endforeach
+                	</ul>
+                 </div>
+            </section>
+            <!-- <img src="{{asset($post->image)}}" alt="{{$post->title}}"> -->
             <div class="post-desc">
                 <a href="/{{$post->id}}" style="font-weight: bold;">{{$post->title}}</a>
                 <p>
@@ -118,6 +126,10 @@ width: 100%;
     @endif
 </div>
 <script>
+    var elms = document.getElementsByClassName( 'splide' );
+    for ( var i = 0; i < elms.length; i++ ) {
+      new Splide( elms[ i ] ).mount();
+    }
     function deletePost(id) {
         $.ajax({
             url: '/delete/' + id,

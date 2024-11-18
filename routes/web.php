@@ -22,7 +22,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'registerPost']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','avatar'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/', [SiteController::class, 'index']);
     Route::get('/chat/{id}', [ChatController::class, 'chat'])->name('chat');

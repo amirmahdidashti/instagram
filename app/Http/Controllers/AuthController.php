@@ -7,8 +7,10 @@ use App\Models\User;
 use Hash;
 use Auth;
 use Validator;
+use App\Models\Image;
 class AuthController extends Controller
 {
+    
     public function login()
     {
         return view('auth.login');
@@ -71,14 +73,15 @@ class AuthController extends Controller
         $user->password = bcrypt(trim($req->password ));
         if($req->hasFile('avatar')) {
             $img = $req->file('avatar');
-            $imgName = time().".".$img->getClientOriginalExtension();
+            $imgName = uniqid().".".$img->getClientOriginalExtension();
             $img->move('files/users/',$imgName);
-            $user->avatar = 'files/users/'.$imgName;
+            $avatar = 'files/users/'.$imgName ;
         }
         else {
-            $user->avatar = 'https://www.gravatar.com/avatar/'.hash( 'sha256', strtolower( trim( $user->email ) )).'?d=mp';
+            $avatar = 'https://www.gravatar.com/avatar/'.hash( 'sha256', strtolower( trim( $user->email ) )).'?d=mp';
         }
         $user->save();
+        Image::create(['image' =>  $avatar, 'type' => 0 , 'subject_id' => $user->id]);
         Auth::login($user);
         return redirect('/');
     }

@@ -101,7 +101,7 @@ border-radius: 0px !important;
             کنندگان</button><button onclick="openpopup('following-popup')" class="btn popup-btn" id="following">دنبال
             شوندگان</button>
     </div>
-    <a  class="btn">پست ها</a>
+    <a href="/profile/{{$user->id}}/posts"  class="btn">پست ها</a>
     @if (Auth::user()->id == $user->id)
         <a href="/logout" style="background-color: red !important;" class="btn">خروج</a></a>
         <button onclick="toggleDisplay('edit-form')" class="btn popup-btn" id="edit">ویرایش</button>

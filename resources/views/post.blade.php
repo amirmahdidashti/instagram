@@ -58,13 +58,13 @@ line-height: 1.4;
         style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; margin: 10px 0;">افزودن
         کامنت</button>
     <div id="comments" style="overflow-y: auto;max-height: 200px;">
-        @foreach ($post->comments as $comment)
+        @foreach ($post->userComments as $comment)
             <div class="comment">
-                <img src="{{asset($comment->user->avatar)}}" alt="پروفایل کاربر">
+                <img src="{{asset($comment->avatar)}}" alt="پروفایل کاربر">
                 <div class="comment-content">
-                    <div class="comment-author">{{ $comment->user->name }}</div>
-                    <div class="comment-time">{{ $comment->created_at->diffForHumans() }}</div>
-                    <div class="comment-text">{{ $comment->body }}</div>
+                    <div class="comment-author">{{ $comment->name }}</div>
+                    <div class="comment-time">{{ $comment->pivot->created_at->diffForHumans() }}</div>
+                    <div class="comment-text">{{ $comment->pivot->body }}</div>
                 </div>
             </div>
         @endforeach
@@ -104,7 +104,7 @@ line-height: 1.4;
                 const newComment = document.createElement('div');
                 newComment.className = 'comment';
                 newComment.innerHTML = `
-                    <img src="{{ asset(Auth::user()->avatar) }}">
+                    <img src="{{ asset($avatar) }}">
                     <div class="comment-content">
                         <div class="comment-author">{{ Auth::user()->name }}</div>
                         <div class="comment-time">{{ \Carbon\Carbon::now()->diffForHumans() }}</div>

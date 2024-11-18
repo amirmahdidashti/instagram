@@ -95,7 +95,7 @@ display: block;
 <div class="chat-container">
     <div id="chat-messages" class="chat-messages">
         @foreach ($messages as $message)
-            <div class="message {{ $message->sender_id == Auth::user()->id ? 'user' : 'other' }}">
+            <div class="message {{ $message->user_id == Auth::user()->id ? 'user' : 'other' }}">
                 {{ $message->text }}
             </div>
         @endforeach
@@ -161,7 +161,7 @@ display: block;
 
     var channel = pusher.subscribe('{{$id}}');
     channel.bind('new-message', function (data) {
-        if (data.sender_id == {{Auth::user()->id}}) {
+        if (data.user_id == {{Auth::user()->id}}) {
             chatMessages.innerHTML += '<div class="message user">' + data.text + '</div>';
         }
         else {

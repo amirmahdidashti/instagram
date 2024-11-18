@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Models\User;
 use App\Models\message;
+use App\Models\Image;
 use Pusher\Pusher;
 use Auth;
 class ChatController extends Controller
@@ -86,7 +87,9 @@ class ChatController extends Controller
                 $chat->user = User::find($chat->user_1);
             }
             $chat->lastMessage = Message::where('chat_id', $chat->id)->latest()->first();
+            $chat->user->avatar = Image::where('type', 0 )->where('subject_id', $chat->user->id)->first()->image;
         }
+        
         return view('chats', compact('chats'));
     }
 }

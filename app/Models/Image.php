@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Post;
-use Carbon\Carbon;
-Carbon::setLocale('fa');
-class comment extends Model
+
+class Image extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'image',
+        'type',
+        'subject_id',
+    ];
 }

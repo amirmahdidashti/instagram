@@ -68,7 +68,7 @@ color: #fff;
         <p class="error">{{ $message }} <i class="fas fa-exclamation-triangle"></i></p>
     @enderror
     <div class="floating-input ">
-        <input style="background-color: white !important;" dir="rtl" type="file" name="image" id="image" >
+        <input style="background-color: white !important;" dir="rtl" type="file" name="image[]" id="image" multiple>
         <label for="image">عکس</label>
     </div>
     <button type="submit" class="submit-button">ارسال</button>
