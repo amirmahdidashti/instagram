@@ -99,13 +99,13 @@ h1 {
     <ul class="chat-list">
         @foreach ($chats as $chat)
             <li class="chat-item">
-                <a href="{{ '/chat/' . $chat->id }}" class="chat-link">
+                <a href="{{ '/chat/' . $chat->pivot->id }}" class="chat-link">
                     <div class="chat-avatar">
-                        <img src="{{ asset($chat->user->avatar) }}" alt="Avatar">
+                        <img src="{{ asset($chat->avatar) }}" alt="Avatar">
                     </div>
                     <div class="chat-info">
-                        <span class="chat-name">{{ $chat->user->name }}</span>
-                        <p class="last-message">{{ $chat->lastMessage ?(($chat->lastMessage->user_id == Auth::user()->id ? 'شما' : $chat->user->name ) .' : '.$chat->lastMessage->text) : 'بدون پیام' }}</p>
+                        <span class="chat-name">{{ $chat->name }}</span>
+                        <p class="last-message">{{ $chat->lastMessage ?(($chat->lastMessage->user_id == Auth::user()->id ? 'شما' : $chat->name ) .' : '.$chat->lastMessage->text) : 'بدون پیام' }}</p>
                     </div>
                 </a>
             </li>

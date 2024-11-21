@@ -110,12 +110,6 @@ class SiteController extends Controller
         } else {
             $user = Auth::user();
         }
-        $followers_id = Follower::where('following_id', $user->id)->pluck('follower_id');
-        $followers = User::whereIn('id', $followers_id)->get();
-        $following_id = Follower::where('follower_id', $user->id)->pluck('following_id');
-        $following = User::whereIn('id', $following_id)->get();
-        $user->followers = $followers;
-        $user->following = $following;
         $user->avatar = Image::where('type', 0 )->where('subject_id', $user->id)->first()->image;
         return view('profile', compact('user'));
     }
@@ -187,7 +181,7 @@ class SiteController extends Controller
             return abort(500);
         }
         $post = Post::findOrFail($id);
-        $post->userComments()->attach(Auth::user()->id, ['body' => $req->body]);
+        $post->userComments()->attach(Auth::user(), ['body' => $req->body]);
         return 1;
     }
     public function follow($id)
@@ -195,15 +189,14 @@ class SiteController extends Controller
         if (Auth::user()->id == $id) {
             return abort(403);
         }
-        elseif (Follower::where('follower_id', Auth::user()->id)->where('following_id', $id)->first()!=null) {
-            Follower::where('follower_id', Auth::user()->id)->where('following_id', $id)->delete();
+        elseif (Auth::user()->followings->contains($id)) {
+            Auth::user()->followings()->detach($id);
             return "دنبال کردن";
         }
         else{
-            $follower = new Follower();
-            $follower->follower_id = Auth::user()->id;
-            $follower->following_id = $id;
-            $follower->save();
+            $user = Auth::user();
+            $user->followings()->attach($id);
+            $user->save();
             return "لغو دنبال کردن";
         }
     }

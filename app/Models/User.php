@@ -58,4 +58,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(message::class);
     }
+
+    public function followers()
+    {
+        return $this->belongsToMany(user::class, 'followers', 'follower_id' , 'following_id')->withTimestamps();
+    }
+    
+    public function followings()
+    {
+        return $this->belongsToMany(user::class, 'followers', 'following_id' , 'follower_id')->withTimestamps();
+    }
+
+    public function chat_1(){
+        return $this->belongsToMany(user::class, 'chats', 'user_1' , 'user_2')->withTimestamps()->withPivot('id');
+    }
+
+    public function chat_2(){
+        return $this->belongsToMany(user::class, 'chats', 'user_2' , 'user_1')->withTimestamps()->withPivot('id');
+    }
 }

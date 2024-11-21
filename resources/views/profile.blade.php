@@ -165,7 +165,7 @@ border-radius: 0px !important;
         <span class="close" onclick="closepopup('following-popup')">&times;</span>
         <h2>دنبال شوندگان</h2>
         <ul class="list">
-            @foreach ($user->following as $following)
+            @foreach ($user->followings as $following)
                 <li>
                     <a href="/profile/{{$following->id}}">{{$following->name}} </a>
                 </li>
@@ -195,7 +195,7 @@ border-radius: 0px !important;
                 document.getElementById('follow').innerHTML = data.responseText;
                 var listItems = document.querySelectorAll(".list");
                 if (data.responseText == "دنبال کردن") {
-                    document.getElementById('user').style.display = "none";
+                    document.getElementById('user').remove();
                 } else {
                     div = '<li id="user"><a href="/profile/{{auth()->user()->id}}">{{auth()->user()->name}} </a></li>';
                     listItems[1].innerHTML += div;

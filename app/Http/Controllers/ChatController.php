@@ -16,43 +16,35 @@ class ChatController extends Controller
         if (Auth::user()->id == $id) {
             return redirect()->back();
         }
-        $chat = Chat::where('user_1', Auth::user()->id)->where('user_2', $id)->first();
-        if ($chat) {
-            return redirect('/chat/' . $chat->id);
-        } else {
-            $chat = Chat::where('user_1', $id)->where('user_2', Auth::user()->id)->first();
-            if ($chat) {
-                return redirect('/chat/' . $chat->id);
+        if (Auth::user()->chat_1->contains($id) || Auth::user()->chat_2->contains($id)) {
+            $chat = Auth::user()->chat_2->find($id);
+            if (!$chat) {
+                $chat = Auth::user()->chat_1->find($id);
             }
+            return redirect('/chat/' . $chat->id);
         }
-        $chat = new Chat();
-        $chat->user_1 = Auth::user()->id;
-        $chat->user_2 = $id;
-        $chat->save();
-        return redirect('/chat/' . $chat->id);
+        User::findOrFail($id)->chat_1()->attach(Auth::user());
+        return redirect('/chat/' . User::findOrFail($id)->chat_1()->find(Auth::user()->id)->id);
     }
 
     public function chat($id)
     {
-        $chat = Chat::find($id);
-        if (!$chat) {
-            return redirect('/');
-        }
-        if ($chat->user_1 != Auth::user()->id && $chat->user_2 != Auth::user()->id) {
+        $chat = Chat::findOrFail($id);
+        if (!Auth::user()->chat_1->contains($chat->user_2) && !Auth::user()->chat_2->contains($chat->user_1)) {
             return abort(403);
         }
         $messages = $chat->messages;
-        $user = User::find($chat->user_2);
-        if ($user == Auth::user()) {
-            $user = User::find($chat->user_1);
+        $user = Auth::user()->chat_1->find($chat->user_2);
+        if ($user == null) {
+            $user = Auth::user()->chat_2->find($chat->user_1);
         }
         foreach ($messages as $message) {
-            if ($message->user_id != Auth::user()->id) {
+            if (!Auth::user()->messages->contains($message->id)) {
                 $message->seen = 1;
                 $message->save();
             }
         }
-        return view('chat', compact('messages', 'user','id'));
+        return view('chat', compact('messages', 'user', 'id'));
     }
 
     public function newMessage(Request $request, $id)
@@ -64,32 +56,27 @@ class ChatController extends Controller
         $message->save();
 
         $options = array(
-          'cluster' => 'ap2',
-          'useTLS' => true
+            'cluster' => 'ap2',
+            'useTLS' => true
         );
         $pusher = new Pusher(
-          'afe67a7ef0421517e32b',
-          'c24f93b8becbbcfac33c',
-          '1891907',
-          $options
+            'afe67a7ef0421517e32b',
+            'c24f93b8becbbcfac33c',
+            '1891907',
+            $options
         );
         $data = $message;
-        $pusher->trigger($id , 'new-message', $data);
+        $pusher->trigger($id, 'new-message', $data);
         return 1;
     }
 
     public function chats()
     {
-        $chats = Chat::where('user_1', Auth::user()->id)->orWhere('user_2', Auth::user()->id)->get();
+        $chats = Auth::user()->chat_1->merge(Auth::user()->chat_2);
         foreach ($chats as $chat) {
-            $chat->user = User::find($chat->user_2);
-            if ($chat->user == Auth::user()) {
-                $chat->user = User::find($chat->user_1);
-            }
-            $chat->lastMessage = Message::where('chat_id', $chat->id)->latest()->first();
-            $chat->user->avatar = Image::where('type', 0 )->where('subject_id', $chat->user->id)->first()->image;
+            $chat->lastMessage = Chat::find($chat->pivot->id)->messages->last();
+            $chat->avatar = Image::where('type', 0)->where('subject_id', $chat->id)->first()->image;
         }
-        
         return view('chats', compact('chats'));
     }
 }

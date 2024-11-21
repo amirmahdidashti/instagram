@@ -46,7 +46,7 @@ color: #fff;
 }
 .post {
 flex-grow: 1;
-width: 100%;
+width:100%;
 margin: 10px;
 display: flex;
 flex-direction: row;
@@ -56,6 +56,7 @@ padding-bottom: 10px;
 .dark-mode .post {
 color: #FFF;
 }
+ 
 .post img {
 width: 100%;
 height: 100%;
@@ -70,7 +71,9 @@ display: -webkit-box;
 -webkit-box-orient: vertical;
 text-align: justify;
 }
-
+.post-aks{
+    width:500px
+}
 @media (max-width: 800px) {
 .post {
 margin: auto;
@@ -98,7 +101,7 @@ width: 100%;
                     <i class="fas fa-trash"></i>
                 </a>
             @endif
-            <section dir="ltr" class="splide" aria-label="Splide Basic HTML Example">
+            <section dir="ltr" class="post-aks splide" aria-label="Splide Basic HTML Example">
                 <div class="splide__track">
                 	<ul class="splide__list">
                         @foreach ($post->images as $img)

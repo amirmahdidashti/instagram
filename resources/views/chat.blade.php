@@ -95,7 +95,7 @@ display: block;
 <div class="chat-container">
     <div id="chat-messages" class="chat-messages">
         @foreach ($messages as $message)
-            <div class="message {{ $message->user_id == Auth::user()->id ? 'user' : 'other' }}">
+            <div class="message {{ $message->user->id == Auth::user()->id ? 'user' : 'other' }}">
                 {{ $message->text }}
             </div>
         @endforeach

@@ -18,6 +18,9 @@ return new class extends Migration
             $table->text('text');
             $table->tinyInteger('seen')->default(0);
             $table->timestamps();
+
+            $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
