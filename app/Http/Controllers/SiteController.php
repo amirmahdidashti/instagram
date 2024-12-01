@@ -12,13 +12,12 @@ use App\Models\Image;
 use Auth;
 use Validator;
 use Hash;
-carbon::setLocale('fa');
 class SiteController extends Controller
 {
     public function index()
     {
         $myFollowing = Follower::where('follower_id', Auth::user()->id)->pluck('following_id');
-        $posts = Post::whereIn('user_id', $myFollowing)->get()->reverse();
+        $posts = Post::whereIn('user_id', $myFollowing)->orderBy('created_at', 'desc')->paginate(10);
         foreach ($posts as $post) {
             $post->images = Image::where('type', 1)->where('subject_id', $post->id)->get();
             $post->user->avatar = Image::where('type', 0 )->where('subject_id', $post->user_id)->first()->image;
@@ -29,7 +28,7 @@ class SiteController extends Controller
     {
         if (isset($req->s)) {
             $s = $req->s;
-            $users = User::where('name','like','%'.$req->s.'%')->get();
+            $users = User::where('name','like','%'.$req->s.'%')->limit(5)->get();
             foreach ($users as   $user) {
                 $user->avatar = Image::where('type', 0 )->where('subject_id', $user->id)->first()->image;
             }
@@ -39,7 +38,7 @@ class SiteController extends Controller
     }
     public function all()
     {
-        $posts = Post::all()->reverse();
+        $posts = Post::orderBy('created_at', 'desc')->paginate(10);;
         foreach ($posts as $post) {
             $post->images = Image::where('type', 1)->where('subject_id', $post->id)->get();
             $post->user->avatar = Image::where('type', 0 )->where('subject_id', $post->user_id)->first()->image;
@@ -49,7 +48,7 @@ class SiteController extends Controller
     public function userPosts($id)
     {
         $user = User::findOrFail($id);
-        $posts = $user->posts;
+        $posts = $user->posts->orderBy('created_at', 'desc')->paginate(10);;
         foreach ($posts as $post) {
             $post->images = Image::where('type', 1)->where('subject_id', $post->id)->get();
             $post->user->avatar = Image::where('type', 0 )->where('subject_id', $post->user_id)->first()->image;
@@ -77,8 +76,11 @@ class SiteController extends Controller
             'image.*' => 'required|mimes:jpeg,png,jpg,gif,svg|max:5120',
         ];
         $validator = Validator::make($req->all(), $roles, $message);
-        if ($validator->fails()) {
+        if ($validator->fails() ) {
             return redirect()->back()->withErrors($validator)->withInput($req->all());
+        }
+        if (! $req->hasFile('image')) {
+            return redirect()->back()->withErrors(['image' => 'عکس نباید خالی باشد'])->withInput($req->all());
         }
         $user = Auth::user();
         $post = new Post();
@@ -105,7 +107,7 @@ class SiteController extends Controller
     }
     public function profile($id = null)
     {
-        if ($id) {
+        if ($id ) {
             $user = User::findOrFail($id);
         } else {
             $user = Auth::user();

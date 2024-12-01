@@ -39,7 +39,7 @@ flex: 1;
 font-weight: bold;
 font-size: 1rem;
 }
-.comment-time {
+.time {
 font-size: 0.8rem;
 color: #888;
 }
@@ -63,7 +63,7 @@ line-height: 1.4;
                 <img src="{{asset($comment->avatar)}}" alt="پروفایل کاربر">
                 <div class="comment-content">
                     <div class="comment-author">{{ $comment->name }}</div>
-                    <div class="comment-time">{{ $comment->pivot->created_at->diffForHumans() }}</div>
+                    <div class="time">{{ \Morilog\Jalali\Jalalian::fromCarbon($comment->pivot->created_at)->ago() }}</div>
                     <div class="comment-text">{{ $comment->pivot->body }}</div>
                 </div>
             </div>

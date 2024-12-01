@@ -29,7 +29,7 @@ background-color: #444;
 .chat-messages {
 flex: 1;
 padding: 10px;
-overflow-y: auto;
+overflow-x: hidden;
 display: flex;
 flex-direction: column;
 gap: 8px;

@@ -87,7 +87,42 @@ margin-right: 0px;
 width: 100%;
 }
 }
+.pagination {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    padding: 0;
+}
 
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination li a, .pagination li span {
+    display: block;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination li.active span {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination li.disabled span {
+    color: #ccc;
+}
+
+.pagination li a:hover {
+    background-color: #f0f0f0;
+}
+.time {
+font-size: 0.8rem;
+color: #888;
+}
 @endsection
 @section('content')
 <div class="posts">
@@ -113,6 +148,7 @@ width: 100%;
             <!-- <img src="{{asset($post->image)}}" alt="{{$post->title}}"> -->
             <div class="post-desc">
                 <a href="/{{$post->id}}" style="font-weight: bold;">{{$post->title}}</a>
+                <div class="time">{{ \Morilog\Jalali\Jalalian::fromCarbon($post->created_at)->ago() }}</div>
                 <p>
                 خلاصه شده:
                 <br>
@@ -124,6 +160,7 @@ width: 100%;
             </div>
         </div>
     @endforeach
+    {{$posts->links()}}
     @if (request()->path() == '/')
         <a style="text-align: center;" href="/all">همه پست ها</a>
     @endif

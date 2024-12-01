@@ -21,10 +21,10 @@ class ChatController extends Controller
             if (!$chat) {
                 $chat = Auth::user()->chat_1->find($id);
             }
-            return redirect('/chat/' . $chat->id);
+            return redirect('/chat/' . $chat->pivot->id);
         }
         User::findOrFail($id)->chat_1()->attach(Auth::user());
-        return redirect('/chat/' . User::findOrFail($id)->chat_1()->find(Auth::user()->id)->id);
+        return redirect('/chat/' . User::findOrFail($id)->chat_1()->find(Auth::user()->id)->pivot->id);
     }
 
     public function chat($id)
