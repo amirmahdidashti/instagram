@@ -107,9 +107,14 @@ class SiteController extends Controller
     }
     public function profile($id = null)
     {
+    
         if ($id ) {
             $user = User::findOrFail($id);
-        } else {
+        }
+        elseif($id=='0'){
+            return abort(404);
+        }
+        else {
             $user = Auth::user();
         }
         $user->avatar = Image::where('type', 0 )->where('subject_id', $user->id)->first()->image;
@@ -151,15 +156,17 @@ class SiteController extends Controller
                 return redirect()->back()->withInput($req->all())->withErrors(['password' => 'رمز عبور اشتباه است']);
             }
         }
+        $user->save();
+        $avatar = Image::where('type', 0 )->where('subject_id', Auth::user()->id)->first();
         if ($req->hasFile('avatar')) {
             $img = $req->file('avatar');
-            $imgName = time() . "." . $img->getClientOriginalExtension();
+            $imgName = uniqid() . "." . $img->getClientOriginalExtension();
             $img->move('files/users/', $imgName);
-            $user->avatar = 'files/users/' . $imgName;
+            $avatar->image = 'files/users/' . $imgName;
         } else {
-            $user->avatar = 'https://www.gravatar.com/avatar/' . hash('sha256', strtolower(trim($user->email))) . '?d=mp';
+            $avatar->image = 'https://www.gravatar.com/avatar/' . hash('sha256', strtolower(trim($user->email))) . '?d=mp';
         }
-        $user->save();
+        $avatar->save();
         return redirect('/profile')->with('message', 'پروفایل شما با موفقیت ویرایش شد');
     }
     public function show($id)
@@ -203,3 +210,4 @@ class SiteController extends Controller
         }
     }
 }
+

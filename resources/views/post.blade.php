@@ -107,7 +107,7 @@ line-height: 1.4;
                     <img src="{{ asset($avatar) }}">
                     <div class="comment-content">
                         <div class="comment-author">{{ Auth::user()->name }}</div>
-                        <div class="comment-time">{{ \Carbon\Carbon::now()->diffForHumans() }}</div>
+                        <div class="time">{{ \Morilog\Jalali\Jalalian::now()->ago() }}</div>
                         <div class="comment-text">${comment}</div>
                     </div>
                 `;

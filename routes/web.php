@@ -33,8 +33,8 @@ Route::middleware(['auth','avatar'])->group(function () {
     Route::get('/newpost', [SiteController::class, 'newpost']);
     Route::post('/newpost', [SiteController::class, 'newpostPost']);
     Route::get('/delete/{id}', [SiteController::class, 'delete']);
-    Route::get('/profile/{id}', [SiteController::class, 'profile']);
-    Route::get('/profile', [SiteController::class, 'profile']);
+    Route::get('/profile/{id?}', [SiteController::class, 'profile']);
+    // Route::get('/profile', [SiteController::class, 'profile']);
     Route::post('/profile', [SiteController::class, 'profilePost']);
     Route::get('/profile/{id}/chat', [ChatController::class, 'newChat']);
     Route::get('/profile/{id}/follow', [SiteController::class, 'follow']);
