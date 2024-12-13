@@ -1,17 +1,21 @@
-name: Deploy via ftp
-on: push
+name: Deploy via FTP
+on:
+  push:
+    branches:
+      - main
 jobs:
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Upload ftp
-      uses: genietim/ftp-action@v4.0.1
-      with:
-        host: cp146.netafraz.com
-        user: amirdash
-        password: amir1400
-        localDir: "dist"
-        remoteDir: "public_html"
+      - uses: actions/checkout@v2
+      - name: Upload FTP
+        uses: sebastianpopp/ftp-action@releases/v2
+        with:
+          host: cp146.netafraz.com
+          user: amirdash
+          password: amir1400
+          localDir: "dist"
+          remoteDir: "www"
+          options: "--delete --ascii"
+
             
