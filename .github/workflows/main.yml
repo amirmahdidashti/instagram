@@ -11,9 +11,9 @@ jobs:
       - name: Upload FTP
         uses: sebastianpopp/ftp-action@releases/v2
         with:
-          host: cp146.netafraz.com
-          user: amirdash
-          password: amir1400
+          host: 'cp146.netafraz.com'
+          user: 'amirdash'
+          password: 'amir1400'
           localDir: "/"
           remoteDir: "/project"
           options: "--delete --ascii"
