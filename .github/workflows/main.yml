@@ -14,8 +14,8 @@ jobs:
           host: cp146.netafraz.com
           user: amirdash
           password: amir1400
-          localDir: "dist"
-          remoteDir: "www"
+          localDir: "/"
+          remoteDir: "/project"
           options: "--delete --ascii"
 
             
