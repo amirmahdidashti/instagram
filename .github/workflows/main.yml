@@ -13,7 +13,7 @@ jobs:
         with:
           host: 'cp146.netafraz.com'
           user: 'amirdash'
-          password: 'amir1400'
+          password: 'Amir1400'
           localDir: "/"
           remoteDir: "/project"
           options: "--delete --ascii"
